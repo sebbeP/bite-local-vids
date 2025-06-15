@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Heart, Bookmark, Share2, Calendar, MapPin, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -60,6 +60,34 @@ const mockRestaurants: Restaurant[] = [
     isSaved: true,
     rating: 4.6,
     priceRange: '$'
+  },
+  {
+    id: '4',
+    name: 'Taco Libre',
+    cuisine: 'Mexican',
+    distance: '0.5 mi',
+    video: '/api/placeholder/400/600',
+    thumbnail: '/api/placeholder/400/600',
+    likes: 1834,
+    description: 'Authentic street tacos with abuela\'s recipes 🌮 Late night munchies sorted!',
+    isLiked: false,
+    isSaved: false,
+    rating: 4.7,
+    priceRange: '$'
+  },
+  {
+    id: '5',
+    name: 'The Noodle House',
+    cuisine: 'Asian Fusion',
+    distance: '0.8 mi',
+    video: '/api/placeholder/400/600',
+    thumbnail: '/api/placeholder/400/600',
+    likes: 967,
+    description: 'Hand-pulled noodles made fresh daily 🍜 Watch the master at work!',
+    isLiked: true,
+    isSaved: false,
+    rating: 4.5,
+    priceRange: '$$'
   }
 ];
 
@@ -67,6 +95,9 @@ const VideoFeed = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [restaurants, setRestaurants] = useState(mockRestaurants);
   const [isPlaying, setIsPlaying] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const startY = useRef(0);
+  const isDragging = useRef(false);
 
   const handleLike = (id: string) => {
     setRestaurants(prev => prev.map(restaurant => 
@@ -84,22 +115,92 @@ const VideoFeed = () => {
     ));
   };
 
-  const handleSwipe = (direction: 'up' | 'down') => {
-    if (direction === 'up' && currentIndex < restaurants.length - 1) {
+  const goToNext = () => {
+    if (currentIndex < restaurants.length - 1) {
       setCurrentIndex(currentIndex + 1);
-    } else if (direction === 'down' && currentIndex > 0) {
+    }
+  };
+
+  const goToPrevious = () => {
+    if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
     }
   };
 
+  // Touch handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    startY.current = e.touches[0].clientY;
+    isDragging.current = true;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging.current) return;
+    e.preventDefault();
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isDragging.current) return;
+    
+    const endY = e.changedTouches[0].clientY;
+    const deltaY = startY.current - endY;
+    const threshold = 50;
+
+    if (Math.abs(deltaY) > threshold) {
+      if (deltaY > 0) {
+        // Swiped up - go to next
+        goToNext();
+      } else {
+        // Swiped down - go to previous
+        goToPrevious();
+      }
+    }
+
+    isDragging.current = false;
+  };
+
+  // Mouse wheel handler
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const threshold = 10;
+    
+    if (e.deltaY > threshold) {
+      goToNext();
+    } else if (e.deltaY < -threshold) {
+      goToPrevious();
+    }
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        goToPrevious();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        goToNext();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex]);
+
   const currentRestaurant = restaurants[currentIndex];
 
   return (
-    <div className="relative h-screen bg-black overflow-hidden">
+    <div 
+      ref={containerRef}
+      className="relative h-screen bg-black overflow-hidden"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onWheel={handleWheel}
+    >
       {/* Video Background */}
       <div className="absolute inset-0">
         <div 
-          className="w-full h-full bg-gradient-to-br from-orange-400 via-red-500 to-pink-600 flex items-center justify-center"
+          className="w-full h-full bg-gradient-to-br from-orange-400 via-red-500 to-pink-600 flex items-center justify-center transition-all duration-300"
           style={{
             backgroundImage: `url(${currentRestaurant.thumbnail})`,
             backgroundSize: 'cover',
@@ -180,39 +281,25 @@ const VideoFeed = () => {
         </Button>
       </div>
 
-      {/* Swipe Navigation */}
-      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex flex-col gap-2 z-20">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-8 h-8 p-0"
-          onClick={() => handleSwipe('down')}
-          disabled={currentIndex === 0}
-        >
-          ↑
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-8 h-8 p-0"
-          onClick={() => handleSwipe('up')}
-          disabled={currentIndex === restaurants.length - 1}
-        >
-          ↓
-        </Button>
-      </div>
-
       {/* Progress Indicator */}
       <div className="absolute top-4 left-4 right-4 flex gap-1 z-20">
         {restaurants.map((_, index) => (
           <div
             key={index}
-            className={`h-1 flex-1 rounded-full ${
+            className={`h-1 flex-1 rounded-full transition-all duration-300 ${
               index === currentIndex ? 'bg-white' : 'bg-white/30'
             }`}
           />
         ))}
       </div>
+
+      {/* Scroll Hint */}
+      {currentIndex === 0 && (
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-20 text-white/60 text-center animate-bounce">
+          <div className="text-xs">Swipe up for more</div>
+          <div className="text-lg">↑</div>
+        </div>
+      )}
     </div>
   );
 };
