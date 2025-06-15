@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { Heart, Bookmark, Share2, Calendar, MapPin, Play, Pause } from 'lucide-react';
+import { Heart, Bookmark, Share2, Calendar, MapPin, Play, Pause, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Restaurant {
@@ -113,6 +112,12 @@ const VideoFeed = () => {
         ? { ...restaurant, isSaved: !restaurant.isSaved }
         : restaurant
     ));
+  };
+
+  const handleNavigate = (restaurantName: string) => {
+    const query = encodeURIComponent(restaurantName);
+    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
+    window.open(googleMapsUrl, '_blank');
   };
 
   const goToNext = () => {
@@ -242,10 +247,21 @@ const VideoFeed = () => {
 
         {/* Action Buttons */}
         <div className="flex items-center justify-between">
-          <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-8 py-3 rounded-full">
-            <Calendar className="h-4 w-4 mr-2" />
-            Book Now
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-6 py-3 rounded-full">
+              <Calendar className="h-4 w-4 mr-2" />
+              Book Now
+            </Button>
+            
+            <Button
+              variant="ghost"
+              className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full px-4 py-3"
+              onClick={() => handleNavigate(currentRestaurant.name)}
+            >
+              <Navigation className="h-4 w-4 mr-2" />
+              Navigate
+            </Button>
+          </div>
           
           <div className="flex items-center gap-1">
             <Button
