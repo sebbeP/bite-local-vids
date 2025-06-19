@@ -270,17 +270,19 @@ const VideoFeed = () => {
         </div>
       </div>
 
-      {/* Right Side Actions */}
-      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-4 z-20">
-        {/* Go There Button - Positioned in right corner */}
+      {/* Go There Button - Fixed to bottom-right corner */}
+      <div className="absolute bottom-6 right-6 z-30">
         <Button
-          className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-6 py-3 rounded-full shadow-lg border-2 border-white/20"
+          className="bg-[#FF4D3E] hover:bg-[#E63946] text-white font-bold px-6 py-4 rounded-full shadow-xl border-2 border-white/20 text-lg"
           onClick={() => handleNavigate(currentRestaurant.name)}
         >
-          <Navigation className="h-5 w-5 mr-2" />
+          <MapPin className="h-6 w-6 mr-2" />
           Go There
         </Button>
-        
+      </div>
+
+      {/* Right Side Actions */}
+      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-4 z-20">
         <Button
           variant="ghost"
           size="icon"
@@ -323,4 +325,3 @@ const VideoFeed = () => {
 };
 
 export default VideoFeed;
-
