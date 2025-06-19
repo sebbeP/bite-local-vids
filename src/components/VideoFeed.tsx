@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Heart, Bookmark, Share2, Calendar, MapPin, Play, Pause, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -116,7 +117,7 @@ const VideoFeed = () => {
 
   const handleNavigate = (restaurantName: string) => {
     const query = encodeURIComponent(restaurantName);
-    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
+    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${query}&travelmode=driving`;
     window.open(googleMapsUrl, '_blank');
   };
 
@@ -227,6 +228,17 @@ const VideoFeed = () => {
         {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
       </Button>
 
+      {/* Prominent Go There Button - Positioned prominently over the video */}
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 translate-y-16 z-20">
+        <Button
+          className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-8 py-4 rounded-full text-lg shadow-lg border-2 border-white/20"
+          onClick={() => handleNavigate(currentRestaurant.name)}
+        >
+          <Navigation className="h-6 w-6 mr-3" />
+          Go There
+        </Button>
+      </div>
+
       {/* Restaurant Info */}
       <div className="absolute bottom-0 left-0 right-0 p-6 text-white z-20">
         <div className="flex items-center justify-between mb-4">
@@ -251,15 +263,6 @@ const VideoFeed = () => {
             <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-6 py-3 rounded-full">
               <Calendar className="h-4 w-4 mr-2" />
               Book Now
-            </Button>
-            
-            <Button
-              variant="ghost"
-              className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full px-4 py-3"
-              onClick={() => handleNavigate(currentRestaurant.name)}
-            >
-              <Navigation className="h-4 w-4 mr-2" />
-              Navigate
             </Button>
           </div>
           
