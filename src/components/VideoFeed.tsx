@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Heart, Bookmark, Share2, Calendar, MapPin, Play, Pause, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -270,8 +268,8 @@ const VideoFeed = () => {
         </div>
       </div>
 
-      {/* Go There Button - Fixed to bottom-right corner */}
-      <div className="absolute bottom-6 right-6 z-30">
+      {/* Go There Button - Fixed above bottom navigation */}
+      <div className="absolute bottom-24 right-6 z-30">
         <Button
           className="bg-[#FF4D3E] hover:bg-[#E63946] text-white font-bold px-6 py-4 rounded-full shadow-xl border-2 border-white/20 text-lg"
           onClick={() => handleNavigate(currentRestaurant.name)}
