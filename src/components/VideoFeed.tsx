@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Heart, Bookmark, Share2, Calendar, MapPin, Play, Pause, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -228,17 +229,6 @@ const VideoFeed = () => {
         {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
       </Button>
 
-      {/* Prominent Go There Button - Positioned prominently over the video */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 translate-y-16 z-20">
-        <Button
-          className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-8 py-4 rounded-full text-lg shadow-lg border-2 border-white/20"
-          onClick={() => handleNavigate(currentRestaurant.name)}
-        >
-          <Navigation className="h-6 w-6 mr-3" />
-          Go There
-        </Button>
-      </div>
-
       {/* Restaurant Info */}
       <div className="absolute bottom-0 left-0 right-0 p-6 text-white z-20">
         <div className="flex items-center justify-between mb-4">
@@ -281,7 +271,16 @@ const VideoFeed = () => {
       </div>
 
       {/* Right Side Actions */}
-      <div className="absolute right-4 bottom-32 flex flex-col gap-4 z-20">
+      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-4 z-20">
+        {/* Go There Button - Positioned in right corner */}
+        <Button
+          className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-6 py-3 rounded-full shadow-lg border-2 border-white/20"
+          onClick={() => handleNavigate(currentRestaurant.name)}
+        >
+          <Navigation className="h-5 w-5 mr-2" />
+          Go There
+        </Button>
+        
         <Button
           variant="ghost"
           size="icon"
@@ -324,3 +323,4 @@ const VideoFeed = () => {
 };
 
 export default VideoFeed;
+
