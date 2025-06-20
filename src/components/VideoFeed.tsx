@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-import { Heart, Bookmark, Share2, Calendar, MapPin, Play, Pause, Navigation } from 'lucide-react';
+import { Heart, Bookmark, Share2, Calendar, MapPin, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Restaurant {
@@ -268,26 +269,15 @@ const VideoFeed = () => {
         </div>
       </div>
 
-      {/* Go There Button - Fixed above bottom navigation */}
-      <div className="absolute bottom-24 right-6 z-30">
-        <Button
-          className="bg-[#FF4D3E] hover:bg-[#E63946] text-white font-bold px-6 py-4 rounded-full shadow-xl border-2 border-white/20 text-lg"
-          onClick={() => handleNavigate(currentRestaurant.name)}
-        >
-          <MapPin className="h-6 w-6 mr-2" />
-          Go There
-        </Button>
-      </div>
-
-      {/* Right Side Actions */}
-      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-4 z-20">
+      {/* Right Side Actions - Vertical Stack */}
+      <div className="absolute right-4 bottom-32 flex flex-col gap-3 z-20">
         <Button
           variant="ghost"
           size="icon"
           className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
           onClick={() => handleSave(currentRestaurant.id)}
         >
-          <Bookmark className={`h-6 w-6 ${currentRestaurant.isSaved ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+          <Bookmark className={`h-5 w-5 ${currentRestaurant.isSaved ? 'fill-yellow-500 text-yellow-500' : ''}`} />
         </Button>
         
         <Button
@@ -295,25 +285,22 @@ const VideoFeed = () => {
           size="icon"
           className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
         >
-          <Share2 className="h-6 w-6" />
+          <Share2 className="h-5 w-5" />
         </Button>
-      </div>
 
-      {/* Progress Indicator */}
-      <div className="absolute top-4 left-4 right-4 flex gap-1 z-20">
-        {restaurants.map((_, index) => (
-          <div
-            key={index}
-            className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-              index === currentIndex ? 'bg-white' : 'bg-white/30'
-            }`}
-          />
-        ))}
+        {/* Go There Button - Smaller Size */}
+        <Button
+          className="bg-[#FF4D3E] hover:bg-[#E63946] text-white font-bold px-4 py-3 rounded-full shadow-xl border-2 border-white/20 text-sm"
+          onClick={() => handleNavigate(currentRestaurant.name)}
+        >
+          <MapPin className="h-4 w-4 mr-1" />
+          Go There
+        </Button>
       </div>
 
       {/* Scroll Hint */}
       {currentIndex === 0 && (
-        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-20 text-white/60 text-center animate-bounce">
+        <div className="absolute bottom-28 left-1/2 transform -translate-x-1/2 z-20 text-white/60 text-center animate-bounce">
           <div className="text-xs">Swipe up for more</div>
           <div className="text-lg">↑</div>
         </div>

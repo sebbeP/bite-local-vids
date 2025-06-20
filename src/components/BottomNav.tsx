@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, Compass, Heart, Bookmark, User } from 'lucide-react';
+import { Home, Compass, Heart, Bookmark, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,8 +8,8 @@ const BottomNav = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 z-30 bg-black/80 backdrop-blur-md border-t border-white/10">
-      <div className="flex items-center justify-around py-3">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-t border-white/10">
+      <div className="flex items-center justify-around py-3 max-w-md mx-auto">
         <Button
           variant="ghost"
           size="icon"
@@ -43,9 +43,9 @@ const BottomNav = () => {
           variant="ghost"
           size="icon"
           className="text-white hover:bg-white/10 border-none rounded-full"
-          onClick={() => navigate('/profile')}
+          onClick={() => navigate('/search')}
         >
-          <User className="h-6 w-6" />
+          <Search className="h-6 w-6" />
         </Button>
       </div>
     </div>

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heart, Bookmark, MapPin, Settings, Camera, Share2, Edit3 } from 'lucide-react';
+import BottomNav from '@/components/BottomNav';
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState('saved');
@@ -37,7 +38,7 @@ const Profile = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-md mx-auto p-6">
@@ -192,6 +193,8 @@ const Profile = () => {
           </div>
         )}
       </div>
+
+      <BottomNav />
     </div>
   );
 };

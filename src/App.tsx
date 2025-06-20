@@ -10,6 +10,7 @@ import ConsumerOnboarding from "./pages/ConsumerOnboarding";
 import RestaurantOnboarding from "./pages/RestaurantOnboarding";
 import Profile from "./pages/Profile";
 import RestaurantDashboard from "./pages/RestaurantDashboard";
+import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/onboarding/restaurant" element={<RestaurantOnboarding />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />
+          <Route path="/search" element={<Search />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
