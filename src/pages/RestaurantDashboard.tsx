@@ -1,7 +1,8 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Eye, Heart, MessageCircle, Upload, TrendingUp, Users, Camera } from 'lucide-react';
+import BottomNav from '@/components/BottomNav';
+import RestaurantMediaUpload from '@/components/RestaurantMediaUpload';
 
 const RestaurantDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -32,8 +33,13 @@ const RestaurantDashboard = () => {
     saves: 45
   };
 
+  const handleUploadComplete = (fileUrl: string, fileType: 'photo' | 'video') => {
+    console.log('Upload complete:', fileUrl, fileType);
+    // Refresh content or show success message
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-md mx-auto p-6">
@@ -109,6 +115,17 @@ const RestaurantDashboard = () => {
               Content
             </button>
             <button
+              onClick={() => setActiveTab('upload')}
+              className={`flex-1 py-4 text-center font-semibold text-sm ${
+                activeTab === 'upload'
+                  ? 'text-orange-500 border-b-2 border-orange-500'
+                  : 'text-gray-500'
+              }`}
+            >
+              <Upload className="h-4 w-4 mx-auto mb-1" />
+              Upload
+            </button>
+            <button
               onClick={() => setActiveTab('insights')}
               className={`flex-1 py-4 text-center font-semibold text-sm ${
                 activeTab === 'insights'
@@ -146,11 +163,19 @@ const RestaurantDashboard = () => {
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => setActiveTab('upload')}
+                >
                   <Upload className="h-4 w-4 mr-3" />
                   Upload New Video
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => setActiveTab('upload')}
+                >
                   <Camera className="h-4 w-4 mr-3" />
                   Update Menu Photos
                 </Button>
@@ -167,7 +192,11 @@ const RestaurantDashboard = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-bold text-gray-900">My Content</h3>
-              <Button size="sm" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-full">
+              <Button 
+                size="sm" 
+                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-full"
+                onClick={() => setActiveTab('upload')}
+              >
                 <Plus className="h-4 w-4 mr-1" />
                 Add
               </Button>
@@ -207,12 +236,42 @@ const RestaurantDashboard = () => {
                 <Camera className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">No content yet</h3>
                 <p className="text-gray-500 mb-4">Start sharing your delicious creations!</p>
-                <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-full">
+                <Button 
+                  className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-full"
+                  onClick={() => setActiveTab('upload')}
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   Create First Post
                 </Button>
               </div>
             )}
+          </div>
+        )}
+
+        {activeTab === 'upload' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Upload Media</h3>
+              <p className="text-gray-600 mb-6">Share photos and videos of your restaurant, food, and team</p>
+              
+              <RestaurantMediaUpload onUploadComplete={handleUploadComplete} />
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Upload Tips</h3>
+              <div className="space-y-4">
+                <div className="p-4 bg-orange-50 rounded-xl">
+                  <h4 className="font-semibold text-gray-900 mb-2">📸 Best Practices:</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Use natural lighting when possible</li>
+                    <li>• Show the food preparation process</li>
+                    <li>• Capture the atmosphere of your restaurant</li>
+                    <li>• Include behind-the-scenes content</li>
+                    <li>• Write engaging captions with relevant tags</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
@@ -256,6 +315,8 @@ const RestaurantDashboard = () => {
           </div>
         )}
       </div>
+
+      <BottomNav />
     </div>
   );
 };
