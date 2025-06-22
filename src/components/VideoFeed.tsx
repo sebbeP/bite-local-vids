@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { Heart, Bookmark, Share2, Calendar, MapPin, Play, Pause } from 'lucide-react';
+import { Heart, Bookmark, Calendar, MapPin, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Restaurant {
@@ -254,23 +253,25 @@ const VideoFeed = () => {
               Book Now
             </Button>
           </div>
-          
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full"
-              onClick={() => handleLike(currentRestaurant.id)}
-            >
-              <Heart className={`h-6 w-6 ${currentRestaurant.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-            </Button>
-            <span className="text-sm text-white/80 ml-1">{currentRestaurant.likes}</span>
-          </div>
         </div>
       </div>
 
       {/* Right Side Actions - Vertical Stack */}
-      <div className="absolute right-4 bottom-32 flex flex-col gap-3 z-20">
+      <div className="absolute right-4 bottom-32 flex flex-col gap-4 z-20">
+        {/* Like Button */}
+        <div className="flex flex-col items-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
+            onClick={() => handleLike(currentRestaurant.id)}
+          >
+            <Heart className={`h-6 w-6 ${currentRestaurant.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+          </Button>
+          <span className="text-xs text-white/80 mt-1">{currentRestaurant.likes}</span>
+        </div>
+        
+        {/* Save Button */}
         <Button
           variant="ghost"
           size="icon"
@@ -279,22 +280,15 @@ const VideoFeed = () => {
         >
           <Bookmark className={`h-5 w-5 ${currentRestaurant.isSaved ? 'fill-yellow-500 text-yellow-500' : ''}`} />
         </Button>
-        
+
+        {/* Go There Button - Icon Only */}
         <Button
           variant="ghost"
           size="icon"
-          className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
-        >
-          <Share2 className="h-5 w-5" />
-        </Button>
-
-        {/* Go There Button - Smaller Size */}
-        <Button
-          className="bg-[#FF4D3E] hover:bg-[#E63946] text-white font-bold px-4 py-3 rounded-full shadow-xl border-2 border-white/20 text-sm"
+          className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-none rounded-full w-12 h-12 shadow-lg"
           onClick={() => handleNavigate(currentRestaurant.name)}
         >
-          <MapPin className="h-4 w-4 mr-1" />
-          Go There
+          <MapPin className="h-5 w-5" />
         </Button>
       </div>
 
