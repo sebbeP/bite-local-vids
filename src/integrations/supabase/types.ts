@@ -9,7 +9,102 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      media_uploads: {
+        Row: {
+          caption: string | null
+          created_at: string
+          file_type: string
+          file_url: string
+          id: string
+          restaurant_id: string | null
+          user_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          file_type: string
+          file_url: string
+          id?: string
+          restaurant_id?: string | null
+          user_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          file_type?: string
+          file_url?: string
+          id?: string
+          restaurant_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_interactions: {
+        Row: {
+          created_at: string
+          id: string
+          interaction_type: string
+          restaurant_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interaction_type: string
+          restaurant_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          restaurant_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          business_description: string | null
+          business_hours: Json | null
+          business_name: string | null
+          created_at: string
+          id: string
+          is_restaurant_owner: boolean | null
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          business_description?: string | null
+          business_hours?: Json | null
+          business_name?: string | null
+          created_at?: string
+          id?: string
+          is_restaurant_owner?: boolean | null
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          business_description?: string | null
+          business_hours?: Json | null
+          business_name?: string | null
+          created_at?: string
+          id?: string
+          is_restaurant_owner?: boolean | null
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

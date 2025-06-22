@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Heart, Bookmark, Calendar, MapPin, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useUserInteractions } from '@/hooks/useUserInteractions';
 
 interface Restaurant {
   id: string;
@@ -94,24 +95,61 @@ const VideoFeed = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [restaurants, setRestaurants] = useState(mockRestaurants);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [likedRestaurants, setLikedRestaurants] = useState<string[]>([]);
+  const [savedRestaurants, setSavedRestaurants] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const startY = useRef(0);
   const isDragging = useRef(false);
+  const { toggleLike, toggleSave, getLikedRestaurants, getSavedRestaurants } = useUserInteractions();
 
-  const handleLike = (id: string) => {
+  useEffect(() => {
+    const loadUserInteractions = async () => {
+      const liked = await getLikedRestaurants();
+      const saved = await getSavedRestaurants();
+      setLikedRestaurants(liked);
+      setSavedRestaurants(saved);
+    };
+    loadUserInteractions();
+  }, []);
+
+  const handleLike = async (id: string) => {
+    const isLiked = await toggleLike(id);
+    
+    // Update local state
     setRestaurants(prev => prev.map(restaurant => 
       restaurant.id === id 
-        ? { ...restaurant, isLiked: !restaurant.isLiked, likes: restaurant.isLiked ? restaurant.likes - 1 : restaurant.likes + 1 }
+        ? { 
+            ...restaurant, 
+            isLiked: isLiked,
+            likes: isLiked ? restaurant.likes + 1 : restaurant.likes - 1
+          }
         : restaurant
     ));
+
+    // Update liked restaurants list
+    if (isLiked) {
+      setLikedRestaurants(prev => [...prev, id]);
+    } else {
+      setLikedRestaurants(prev => prev.filter(rid => rid !== id));
+    }
   };
 
-  const handleSave = (id: string) => {
+  const handleSave = async (id: string) => {
+    const isSaved = await toggleSave(id);
+    
+    // Update local state
     setRestaurants(prev => prev.map(restaurant => 
       restaurant.id === id 
-        ? { ...restaurant, isSaved: !restaurant.isSaved }
+        ? { ...restaurant, isSaved: isSaved }
         : restaurant
     ));
+
+    // Update saved restaurants list
+    if (isSaved) {
+      setSavedRestaurants(prev => [...prev, id]);
+    } else {
+      setSavedRestaurants(prev => prev.filter(rid => rid !== id));
+    }
   };
 
   const handleNavigate = (restaurantName: string) => {
@@ -266,7 +304,7 @@ const VideoFeed = () => {
             className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
             onClick={() => handleLike(currentRestaurant.id)}
           >
-            <Heart className={`h-6 w-6 ${currentRestaurant.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+            <Heart className={`h-6 w-6 ${likedRestaurants.includes(currentRestaurant.id) ? 'fill-red-500 text-red-500' : ''}`} />
           </Button>
           <span className="text-xs text-white/80 mt-1">{currentRestaurant.likes}</span>
         </div>
@@ -278,7 +316,7 @@ const VideoFeed = () => {
           className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
           onClick={() => handleSave(currentRestaurant.id)}
         >
-          <Bookmark className={`h-5 w-5 ${currentRestaurant.isSaved ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+          <Bookmark className={`h-5 w-5 ${savedRestaurants.includes(currentRestaurant.id) ? 'fill-yellow-500 text-yellow-500' : ''}`} />
         </Button>
 
         {/* Go There Button - Icon Only */}
