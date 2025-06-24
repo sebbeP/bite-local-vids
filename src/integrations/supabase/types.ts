@@ -17,6 +17,7 @@ export type Database = {
           file_url: string
           id: string
           restaurant_id: string | null
+          storage_path: string | null
           user_id: string
         }
         Insert: {
@@ -26,6 +27,7 @@ export type Database = {
           file_url: string
           id?: string
           restaurant_id?: string | null
+          storage_path?: string | null
           user_id: string
         }
         Update: {
@@ -35,6 +37,7 @@ export type Database = {
           file_url?: string
           id?: string
           restaurant_id?: string | null
+          storage_path?: string | null
           user_id?: string
         }
         Relationships: []
