@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Camera, Heart, MessageCircle, Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -31,7 +30,14 @@ const RestaurantGallery: React.FC = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setPosts(data || []);
+      
+      // Type assertion to ensure file_type matches our interface
+      const typedPosts = (data || []).map(post => ({
+        ...post,
+        file_type: post.file_type as 'photo' | 'video'
+      }));
+      
+      setPosts(typedPosts);
     } catch (error) {
       console.error('Error loading posts:', error);
     } finally {
