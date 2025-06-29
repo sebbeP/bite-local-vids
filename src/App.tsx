@@ -4,8 +4,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Welcome from "./pages/Welcome";
+import Auth from "./pages/Auth";
 import ConsumerOnboarding from "./pages/ConsumerOnboarding";
 import RestaurantOnboarding from "./pages/RestaurantOnboarding";
 import Profile from "./pages/Profile";
@@ -17,23 +19,26 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Welcome />} />
-          <Route path="/feed" element={<Index />} />
-          <Route path="/onboarding/consumer" element={<ConsumerOnboarding />} />
-          <Route path="/onboarding/restaurant" element={<RestaurantOnboarding />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />
-          <Route path="/search" element={<Search />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Welcome />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/feed" element={<Index />} />
+            <Route path="/onboarding/consumer" element={<ConsumerOnboarding />} />
+            <Route path="/onboarding/restaurant" element={<RestaurantOnboarding />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />
+            <Route path="/search" element={<Search />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

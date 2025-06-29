@@ -1,8 +1,10 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { MapPin, Check } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const cuisineOptions = [
   { id: 'italian', name: 'Italian', emoji: '🍝' },
@@ -31,10 +33,20 @@ const dietaryOptions = [
 
 const ConsumerOnboarding = () => {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
+  const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
   const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
+  const [saving, setSaving] = useState(false);
+
+  // Redirect to auth if not authenticated
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/auth');
+    }
+  }, [user, loading, navigate]);
 
   const toggleSelection = (id: string, currentList: string[], setter: (list: string[]) => void) => {
     if (currentList.includes(id)) {
@@ -44,21 +56,73 @@ const ConsumerOnboarding = () => {
     }
   };
 
+  const savePreferences = async () => {
+    if (!user) return;
+    
+    setSaving(true);
+    try {
+      const preferences = {
+        cuisines: selectedCuisines,
+        priceRanges: selectedPriceRanges,
+        dietary: selectedDietary
+      };
+
+      const { error } = await supabase
+        .from('user_profiles')
+        .update({
+          preferences,
+          onboarding_completed: true,
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Preferences Saved!",
+        description: "Your food preferences have been saved successfully."
+      });
+
+      navigate('/feed');
+    } catch (error) {
+      console.error('Error saving preferences:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save preferences. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleLocationAccess = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         () => {
-          navigate('/feed');
+          savePreferences();
         },
         () => {
           // Handle location denial gracefully
-          navigate('/feed');
+          savePreferences();
         }
       );
     } else {
-      navigate('/feed');
+      savePreferences();
     }
   };
+
+  // Show loading while checking auth
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (step === 1) {
     return (
@@ -220,15 +284,17 @@ const ConsumerOnboarding = () => {
 
         <Button
           onClick={handleLocationAccess}
+          disabled={saving}
           className="w-full bg-white text-orange-500 hover:bg-white/90 font-semibold py-4 rounded-full text-lg mb-4"
         >
           <MapPin className="h-5 w-5 mr-2" />
-          Enable Location
+          {saving ? 'Saving...' : 'Enable Location'}
         </Button>
 
         <Button
           variant="ghost"
-          onClick={() => navigate('/feed')}
+          onClick={() => savePreferences()}
+          disabled={saving}
           className="w-full text-white/80 hover:text-white"
         >
           Maybe later
