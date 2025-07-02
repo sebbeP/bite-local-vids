@@ -33,7 +33,7 @@ const dietaryOptions = [
 
 const ConsumerOnboarding = () => {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
@@ -179,12 +179,24 @@ const ConsumerOnboarding = () => {
         <div className="text-center max-w-md">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Authentication Required</h2>
           <p className="text-gray-600 mb-6">Please log in to continue with onboarding</p>
-          <Button
-            onClick={() => navigate('/auth')}
-            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 px-6 rounded-full"
-          >
-            Go to Login
-          </Button>
+          <div className="space-y-3">
+            <Button
+              onClick={() => navigate('/auth')}
+              className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 px-6 rounded-full"
+            >
+              Go to Login
+            </Button>
+            <Button
+              variant="outline"
+              onClick={async () => {
+                await signOut();
+                navigate('/');
+              }}
+              className="w-full"
+            >
+              Sign Out & Start Over
+            </Button>
+          </div>
         </div>
       </div>
     );
