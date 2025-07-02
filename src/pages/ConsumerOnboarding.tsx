@@ -160,6 +160,31 @@ const ConsumerOnboarding = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading...</p>
+          <Button
+            variant="outline"
+            onClick={() => navigate('/auth')}
+            className="mt-4"
+          >
+            Go to Login
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login prompt if not authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
+        <div className="text-center max-w-md">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Authentication Required</h2>
+          <p className="text-gray-600 mb-6">Please log in to continue with onboarding</p>
+          <Button
+            onClick={() => navigate('/auth')}
+            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 px-6 rounded-full"
+          >
+            Go to Login
+          </Button>
         </div>
       </div>
     );
