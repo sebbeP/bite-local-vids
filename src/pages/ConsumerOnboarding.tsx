@@ -45,6 +45,7 @@ const ConsumerOnboarding = () => {
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
+      return;
     }
   }, [user, loading, navigate]);
 
