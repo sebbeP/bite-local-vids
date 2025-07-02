@@ -76,7 +76,12 @@ export type Database = {
           created_at: string
           id: string
           is_restaurant_owner: boolean | null
+          latitude: number | null
+          location_address: string | null
+          longitude: number | null
           name: string
+          onboarding_completed: boolean | null
+          preferences: Json | null
           updated_at: string
           user_id: string
         }
@@ -89,7 +94,12 @@ export type Database = {
           created_at?: string
           id?: string
           is_restaurant_owner?: boolean | null
+          latitude?: number | null
+          location_address?: string | null
+          longitude?: number | null
           name: string
+          onboarding_completed?: boolean | null
+          preferences?: Json | null
           updated_at?: string
           user_id: string
         }
@@ -102,7 +112,12 @@ export type Database = {
           created_at?: string
           id?: string
           is_restaurant_owner?: boolean | null
+          latitude?: number | null
+          location_address?: string | null
+          longitude?: number | null
           name?: string
+          onboarding_completed?: boolean | null
+          preferences?: Json | null
           updated_at?: string
           user_id?: string
         }

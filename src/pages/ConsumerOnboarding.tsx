@@ -56,7 +56,7 @@ const ConsumerOnboarding = () => {
     }
   };
 
-  const savePreferences = async () => {
+  const savePreferences = async (locationData?: { lat: number; lng: number; address?: string }) => {
     if (!user) return;
     
     setSaving(true);
@@ -67,13 +67,21 @@ const ConsumerOnboarding = () => {
         dietary: selectedDietary
       };
 
+      const updateData: any = {
+        preferences,
+        onboarding_completed: true,
+        updated_at: new Date().toISOString()
+      };
+
+      if (locationData) {
+        updateData.latitude = locationData.lat;
+        updateData.longitude = locationData.lng;
+        updateData.location_address = locationData.address;
+      }
+
       const { error } = await supabase
         .from('user_profiles')
-        .update({
-          preferences,
-          onboarding_completed: true,
-          updated_at: new Date().toISOString()
-        })
+        .update(updateData)
         .eq('user_id', user.id);
 
       if (error) throw error;
@@ -99,15 +107,47 @@ const ConsumerOnboarding = () => {
   const handleLocationAccess = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        () => {
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          
+          // Try to get readable address using reverse geocoding
+          let address = '';
+          try {
+            const response = await fetch(
+              `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+            );
+            const data = await response.json();
+            address = data.city && data.principalSubdivision 
+              ? `${data.city}, ${data.principalSubdivision}` 
+              : `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+          } catch (error) {
+            console.log('Geocoding failed, using coordinates');
+            address = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+          }
+
+          savePreferences({ lat: latitude, lng: longitude, address });
+        },
+        (error) => {
+          console.log('Location access denied:', error);
+          toast({
+            title: "Location Access Denied",
+            description: "You can still use the app, but we won't be able to show location-based recommendations.",
+            variant: "destructive"
+          });
           savePreferences();
         },
-        () => {
-          // Handle location denial gracefully
-          savePreferences();
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 60000
         }
       );
     } else {
+      toast({
+        title: "Location Not Supported",
+        description: "Your browser doesn't support location services.",
+        variant: "destructive"
+      });
       savePreferences();
     }
   };
