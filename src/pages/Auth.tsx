@@ -24,11 +24,11 @@ const Auth = () => {
       const checkOnboarding = async () => {
         const { data: profile } = await supabase
           .from('user_profiles')
-          .select('onboarding_completed, username')
+          .select('onboarding_completed, username, name')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
         
-        if (profile?.onboarding_completed && profile?.username) {
+        if (profile?.onboarding_completed && profile?.username && profile?.name) {
           navigate('/feed');
         } else {
           navigate('/onboarding/consumer');

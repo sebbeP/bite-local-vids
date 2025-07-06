@@ -54,12 +54,18 @@ const ConsumerOnboarding = () => {
       const checkOnboarding = async () => {
         const { data: profile } = await supabase
           .from('user_profiles')
-          .select('onboarding_completed, username')
+          .select('onboarding_completed, username, name')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
         
-        if (profile?.onboarding_completed && profile?.username) {
+        if (profile?.onboarding_completed && profile?.username && profile?.name) {
           navigate('/feed');
+        } else if (profile?.username && profile?.name) {
+          // User has basic info but hasn't completed preferences
+          setStep(1);
+        } else {
+          // User needs to complete basic info
+          setStep(0);
         }
       };
       

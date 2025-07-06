@@ -77,15 +77,17 @@ const UserInfoStep: React.FC<UserInfoStepProps> = ({ onComplete, onBack }) => {
         throw new Error('Username is already taken');
       }
 
-      // Update user profile
+      // Update or insert user profile
       const { error } = await supabase
         .from('user_profiles')
-        .update({
+        .upsert({
+          user_id: user?.id,
           name: name.trim(),
           username: username.trim(),
           updated_at: new Date().toISOString()
-        })
-        .eq('user_id', user?.id);
+        }, {
+          onConflict: 'user_id'
+        });
 
       if (error) throw error;
 
