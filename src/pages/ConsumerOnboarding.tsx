@@ -5,6 +5,7 @@ import { MapPin, Check } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import UserInfoStep from './UserInfoStep';
 
 const cuisineOptions = [
   { id: 'italian', name: 'Italian', emoji: '🍝' },
@@ -35,17 +36,34 @@ const ConsumerOnboarding = () => {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
   const { toast } = useToast();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0); // Start at 0 for user info
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
   const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
+  const [userInfo, setUserInfo] = useState({ name: '', username: '' });
 
-  // Redirect to auth if not authenticated
+  // Redirect to auth if not authenticated, or to feed if onboarding is complete
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
       return;
+    }
+    
+    if (user) {
+      const checkOnboarding = async () => {
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('onboarding_completed, username')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (profile?.onboarding_completed && profile?.username) {
+          navigate('/feed');
+        }
+      };
+      
+      checkOnboarding();
     }
   }, [user, loading, navigate]);
 
@@ -202,6 +220,19 @@ const ConsumerOnboarding = () => {
     );
   }
 
+  // Step 0: User Info Collection
+  if (step === 0) {
+    return (
+      <UserInfoStep
+        onComplete={(data) => {
+          setUserInfo(data);
+          setStep(1);
+        }}
+        onBack={() => navigate('/auth')}
+      />
+    );
+  }
+
   if (step === 1) {
     return (
       <div className="min-h-screen bg-white p-4">
@@ -231,13 +262,22 @@ const ConsumerOnboarding = () => {
             ))}
           </div>
 
-          <Button
-            onClick={() => setStep(2)}
-            disabled={selectedCuisines.length === 0}
-            className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-4 rounded-full text-lg"
-          >
-            Continue ({selectedCuisines.length} selected)
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => setStep(0)}
+              className="flex-1 py-4 rounded-full font-semibold"
+            >
+              Back
+            </Button>
+            <Button
+              onClick={() => setStep(2)}
+              disabled={selectedCuisines.length === 0}
+              className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-4 rounded-full text-lg"
+            >
+              Continue ({selectedCuisines.length})
+            </Button>
+          </div>
         </div>
       </div>
     );
