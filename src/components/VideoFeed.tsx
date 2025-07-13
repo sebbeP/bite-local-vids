@@ -7,6 +7,85 @@ const VideoFeed = () => {
   const [mediaUploads, setMediaUploads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Example restaurant data for demo/first-time users
+  const exampleRestaurants = [
+    {
+      id: 'demo-1',
+      file_url: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop',
+      file_type: 'photo',
+      caption: 'Fresh wood-fired pizza straight from our oven! 🔥 Try our signature Margherita today',
+      user_id: 'demo-restaurant-1',
+      created_at: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+      demo_profile: {
+        name: 'Bella Vista Pizzeria',
+        username: 'bellavista_pizza',
+        avatar_url: null,
+        business_name: 'Bella Vista Pizzeria',
+        business_description: 'Authentic Italian pizza in the heart of Båstad'
+      }
+    },
+    {
+      id: 'demo-2',
+      file_url: 'https://images.unsplash.com/photo-1551782450-17144efb9c50?w=800&h=600&fit=crop',
+      file_type: 'photo',
+      caption: 'Sunday brunch is back! Join us for fresh pastries and artisan coffee ☕️',
+      user_id: 'demo-restaurant-2',
+      created_at: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(), // 6 hours ago
+      demo_profile: {
+        name: 'Seaside Café',
+        username: 'seaside_cafe',
+        avatar_url: null,
+        business_name: 'Seaside Café',
+        business_description: 'Cozy beachfront café serving fresh local ingredients'
+      }
+    },
+    {
+      id: 'demo-3',
+      file_url: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&h=600&fit=crop',
+      file_type: 'photo',
+      caption: 'New Nordic menu launching this week! Book your table now 🌿',
+      user_id: 'demo-restaurant-3',
+      created_at: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(), // 12 hours ago
+      demo_profile: {
+        name: 'Nordic Kitchen',
+        username: 'nordic_kitchen',
+        avatar_url: null,
+        business_name: 'Nordic Kitchen',
+        business_description: 'Modern Scandinavian cuisine with a sustainable twist'
+      }
+    },
+    {
+      id: 'demo-4',
+      file_url: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=600&fit=crop',
+      file_type: 'photo',
+      caption: 'Handmade pasta daily! Tonight\'s special: truffle linguine 🍝',
+      user_id: 'demo-restaurant-1',
+      created_at: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString(), // 18 hours ago
+      demo_profile: {
+        name: 'Bella Vista Pizzeria',
+        username: 'bellavista_pizza',
+        avatar_url: null,
+        business_name: 'Bella Vista Pizzeria',
+        business_description: 'Authentic Italian pizza in the heart of Båstad'
+      }
+    },
+    {
+      id: 'demo-5',
+      file_url: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=800&h=600&fit=crop',
+      file_type: 'photo',
+      caption: 'Weekend special: locally caught fish with seasonal vegetables 🐟',
+      user_id: 'demo-restaurant-2',
+      created_at: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 24 hours ago
+      demo_profile: {
+        name: 'Seaside Café',
+        username: 'seaside_cafe',
+        avatar_url: null,
+        business_name: 'Seaside Café',
+        business_description: 'Cozy beachfront café serving fresh local ingredients'
+      }
+    }
+  ];
+
   useEffect(() => {
     loadMediaUploads();
   }, []);
@@ -38,26 +117,17 @@ const VideoFeed = () => {
     );
   }
 
+  // Show example restaurants if no real uploads exist
+  const displayContent = mediaUploads.length > 0 ? mediaUploads : exampleRestaurants;
+
   return (
     <div className="h-full bg-gray-50 overflow-y-auto">
       <div className="max-w-md mx-auto">
-        {mediaUploads.length > 0 ? (
-          <div className="pt-4">
-            {mediaUploads.map((media) => (
-              <MediaCard key={media.id} media={media} />
-            ))}
-          </div>
-        ) : (
-          <div className="h-screen flex items-center justify-center text-center px-4">
-            <div>
-              <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
-                🍽️
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">No content yet</h3>
-              <p className="text-gray-600 mb-6">Be the first to share your food discoveries!</p>
-            </div>
-          </div>
-        )}
+        <div className="pt-4">
+          {displayContent.map((media) => (
+            <MediaCard key={media.id} media={media} />
+          ))}
+        </div>
       </div>
     </div>
   );

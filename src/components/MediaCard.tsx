@@ -10,6 +10,13 @@ interface MediaCardProps {
     caption: string | null;
     user_id: string;
     created_at: string;
+    demo_profile?: {
+      name: string;
+      username: string;
+      avatar_url: string | null;
+      business_name?: string;
+      business_description?: string;
+    };
   };
 }
 
@@ -19,8 +26,13 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    loadUserProfile();
-  }, [media.user_id]);
+    // If it's demo content, use demo profile data
+    if (media.demo_profile) {
+      setUserProfile(media.demo_profile);
+    } else {
+      loadUserProfile();
+    }
+  }, [media.user_id, media.demo_profile]);
 
   const loadUserProfile = async () => {
     try {
