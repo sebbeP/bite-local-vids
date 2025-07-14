@@ -5,7 +5,6 @@ import { MapPin, Check } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import UserInfoStep from './UserInfoStep';
 
 const cuisineOptions = [
   { id: 'italian', name: 'Italian', emoji: '🍝' },
@@ -34,42 +33,19 @@ const dietaryOptions = [
 
 const ConsumerOnboarding = () => {
   const navigate = useNavigate();
-  const { user, loading, signOut } = useAuth();
+  const { user, loading } = useAuth();
   const { toast } = useToast();
-  const [step, setStep] = useState(0); // Start at 0 for user info
+  const [step, setStep] = useState(1);
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
   const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
-  const [userInfo, setUserInfo] = useState({ name: '', username: '' });
 
-  // Redirect to auth if not authenticated, or to feed if onboarding is complete
+  // Redirect to auth if not authenticated
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
       return;
-    }
-    
-    if (user) {
-      const checkOnboarding = async () => {
-        const { data: profile } = await supabase
-          .from('user_profiles')
-          .select('onboarding_completed, username, name')
-          .eq('user_id', user.id)
-          .maybeSingle();
-        
-        if (profile?.onboarding_completed && profile?.username && profile?.name) {
-          navigate('/feed');
-        } else if (profile?.username && profile?.name) {
-          // User has basic info but hasn't completed preferences
-          setStep(1);
-        } else {
-          // User needs to complete basic info
-          setStep(0);
-        }
-      };
-      
-      checkOnboarding();
     }
   }, [user, loading, navigate]);
 
@@ -184,58 +160,8 @@ const ConsumerOnboarding = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading...</p>
-          <Button
-            variant="outline"
-            onClick={() => navigate('/auth')}
-            className="mt-4"
-          >
-            Go to Login
-          </Button>
         </div>
       </div>
-    );
-  }
-
-  // Show login prompt if not authenticated
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-4">
-        <div className="text-center max-w-md">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Authentication Required</h2>
-          <p className="text-gray-600 mb-6">Please log in to continue with onboarding</p>
-          <div className="space-y-3">
-            <Button
-              onClick={() => navigate('/auth')}
-              className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 px-6 rounded-full"
-            >
-              Go to Login
-            </Button>
-            <Button
-              variant="outline"
-              onClick={async () => {
-                await signOut();
-                navigate('/');
-              }}
-              className="w-full"
-            >
-              Sign Out & Start Over
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Step 0: User Info Collection
-  if (step === 0) {
-    return (
-      <UserInfoStep
-        onComplete={(data) => {
-          setUserInfo(data);
-          setStep(1);
-        }}
-        onBack={() => navigate('/auth')}
-      />
     );
   }
 
@@ -268,22 +194,13 @@ const ConsumerOnboarding = () => {
             ))}
           </div>
 
-          <div className="flex gap-3">
-            <Button
-              variant="outline"
-              onClick={() => setStep(0)}
-              className="flex-1 py-4 rounded-full font-semibold"
-            >
-              Back
-            </Button>
-            <Button
-              onClick={() => setStep(2)}
-              disabled={selectedCuisines.length === 0}
-              className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-4 rounded-full text-lg"
-            >
-              Continue ({selectedCuisines.length})
-            </Button>
-          </div>
+          <Button
+            onClick={() => setStep(2)}
+            disabled={selectedCuisines.length === 0}
+            className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-4 rounded-full text-lg"
+          >
+            Continue ({selectedCuisines.length} selected)
+          </Button>
         </div>
       </div>
     );

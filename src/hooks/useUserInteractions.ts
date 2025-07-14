@@ -5,33 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export const useUserInteractions = () => {
   const [userId, setUserId] = useState<string | null>(null);
-  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
-  const [savedPosts, setSavedPosts] = useState<Set<string>>(new Set());
   const { toast } = useToast();
-
-  const getLikedRestaurants = async () => {
-    if (!userId) return [];
-    
-    const { data } = await supabase
-      .from('user_interactions')
-      .select('restaurant_id')
-      .eq('user_id', userId)
-      .eq('interaction_type', 'like');
-    
-    return data?.map(item => item.restaurant_id) || [];
-  };
-
-  const getSavedRestaurants = async () => {
-    if (!userId) return [];
-    
-    const { data } = await supabase
-      .from('user_interactions')
-      .select('restaurant_id')
-      .eq('user_id', userId)
-      .eq('interaction_type', 'save');
-    
-    return data?.map(item => item.restaurant_id) || [];
-  };
 
   useEffect(() => {
     const getUser = async () => {
@@ -40,21 +14,6 @@ export const useUserInteractions = () => {
     };
     getUser();
   }, []);
-
-  useEffect(() => {
-    if (userId) {
-      // Load existing interactions when userId is set
-      const loadInteractions = async () => {
-        const [likedData, savedData] = await Promise.all([
-          getLikedRestaurants(),
-          getSavedRestaurants()
-        ]);
-        setLikedPosts(new Set(likedData));
-        setSavedPosts(new Set(savedData));
-      };
-      loadInteractions();
-    }
-  }, [userId]);
 
   const toggleLike = async (restaurantId: string) => {
     if (!userId) {
@@ -158,43 +117,33 @@ export const useUserInteractions = () => {
     }
   };
 
-
-  const likePost = async (postId: string) => {
-    const result = await toggleLike(postId);
-    if (result) {
-      setLikedPosts(prev => new Set([...prev, postId]));
-    } else {
-      setLikedPosts(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(postId);
-        return newSet;
-      });
-    }
+  const getLikedRestaurants = async () => {
+    if (!userId) return [];
+    
+    const { data } = await supabase
+      .from('user_interactions')
+      .select('restaurant_id')
+      .eq('user_id', userId)
+      .eq('interaction_type', 'like');
+    
+    return data?.map(item => item.restaurant_id) || [];
   };
 
-  const savePost = async (postId: string) => {
-    const result = await toggleSave(postId);
-    if (result) {
-      setSavedPosts(prev => new Set([...prev, postId]));
-    } else {
-      setSavedPosts(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(postId);
-        return newSet;
-      });
-    }
+  const getSavedRestaurants = async () => {
+    if (!userId) return [];
+    
+    const { data } = await supabase
+      .from('user_interactions')
+      .select('restaurant_id')
+      .eq('user_id', userId)
+      .eq('interaction_type', 'save');
+    
+    return data?.map(item => item.restaurant_id) || [];
   };
-
-  const isLiked = (postId: string) => likedPosts.has(postId);
-  const isSaved = (postId: string) => savedPosts.has(postId);
 
   return {
     toggleLike,
     toggleSave,
-    likePost,
-    savePost,
-    isLiked,
-    isSaved,
     getLikedRestaurants,
     getSavedRestaurants,
     userId

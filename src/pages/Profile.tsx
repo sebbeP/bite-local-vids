@@ -125,14 +125,11 @@ const Profile = () => {
             </div>
             <div className="ml-4 flex-1">
               <h2 className="text-xl font-bold text-gray-900">
-                {userProfile?.name || 'Loading...'}
+                {userProfile?.name || 'Alex Johnson'}
               </h2>
-              <p className="text-gray-600 text-sm mb-2">
-                @{userProfile?.username || 'username'}
-              </p>
               <div className="flex items-center text-gray-600 mb-2">
                 <MapPin className="h-4 w-4 mr-1" />
-                <span className="text-sm">{userProfile?.location_address || 'Location not set'}</span>
+                <span className="text-sm">Brooklyn, NY</span>
               </div>
               <div className="flex gap-4 text-sm">
                 <span><strong>127</strong> places saved</span>

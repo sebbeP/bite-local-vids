@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Mail, Lock, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -20,22 +19,7 @@ const Auth = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (user) {
-      // Check if user has completed onboarding
-      const checkOnboarding = async () => {
-        const { data: profile } = await supabase
-          .from('user_profiles')
-          .select('onboarding_completed, username, name')
-          .eq('user_id', user.id)
-          .maybeSingle();
-        
-        if (profile?.onboarding_completed && profile?.username && profile?.name) {
-          navigate('/feed');
-        } else {
-          navigate('/onboarding/consumer');
-        }
-      };
-      
-      checkOnboarding();
+      navigate('/onboarding/consumer');
     }
   }, [user, navigate]);
 
