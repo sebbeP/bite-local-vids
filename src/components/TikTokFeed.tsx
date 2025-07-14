@@ -75,6 +75,7 @@ const TikTokFeed = () => {
     alert(`Navigate to @${username} profile`);
   };
 
+  // Early return must come after all hooks
   if (demoPosts.length === 0) {
     return (
       <div className="h-screen w-full bg-black flex items-center justify-center">
