@@ -22,69 +22,8 @@ const TikTokFeed = () => {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const navigate = useNavigate();
 
-  // Demo restaurant posts with vertical content
-  const demoPosts: TikTokPost[] = [
-    {
-      id: 'demo-1',
-      file_url: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=600&h=1200&fit=crop',
-      file_type: 'photo',
-      caption: '🔥 Our famous truffle pasta is back! Limited time only',
-      restaurant_name: 'Bella Vista Pizzeria',
-      username: 'bellavista_pizza',
-      location: 'Båstad, Sweden',
-      likes: 847,
-      comments: 23,
-      is_demo: true
-    },
-    {
-      id: 'demo-2',
-      file_url: 'https://images.unsplash.com/photo-1551782450-17144efb9c50?w=600&h=1200&fit=crop',
-      file_type: 'photo',
-      caption: '☕️ Sunday brunch vibes! Fresh pastries made daily',
-      restaurant_name: 'Seaside Café',
-      username: 'seaside_cafe',
-      location: 'Båstad Harbor',
-      likes: 1240,
-      comments: 67,
-      is_demo: true
-    },
-    {
-      id: 'demo-3',
-      file_url: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&h=1200&fit=crop',
-      file_type: 'photo',
-      caption: '🌿 New Nordic menu launching this week! Book now',
-      restaurant_name: 'Nordic Kitchen',
-      username: 'nordic_kitchen',
-      location: 'Central Båstad',
-      likes: 567,
-      comments: 34,
-      is_demo: true
-    },
-    {
-      id: 'demo-4',
-      file_url: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&h=1200&fit=crop',
-      file_type: 'photo',
-      caption: '🍝 Handmade pasta daily! Tonight special: linguine',
-      restaurant_name: 'Bella Vista Pizzeria',
-      username: 'bellavista_pizza',
-      location: 'Båstad, Sweden',
-      likes: 923,
-      comments: 45,
-      is_demo: true
-    },
-    {
-      id: 'demo-5',
-      file_url: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600&h=1200&fit=crop',
-      file_type: 'photo',
-      caption: '🐟 Fresh catch of the day with seasonal vegetables',
-      restaurant_name: 'Seaside Café',
-      username: 'seaside_cafe',
-      location: 'Båstad Harbor',
-      likes: 1150,
-      comments: 89,
-      is_demo: true
-    }
-  ];
+  // No demo posts - show empty state
+  const demoPosts: TikTokPost[] = [];
 
   // Handle scroll to change posts
   const handleScroll = (e: React.WheelEvent) => {
@@ -124,6 +63,18 @@ const TikTokFeed = () => {
     // For demo purposes, show an alert. In real app, navigate to restaurant profile
     alert(`Navigate to @${username} profile`);
   };
+
+  if (demoPosts.length === 0) {
+    return (
+      <div className="h-screen w-full bg-black flex items-center justify-center">
+        <div className="text-center text-white">
+          <User className="h-16 w-16 mx-auto mb-4 opacity-50" />
+          <h2 className="text-xl font-semibold mb-2">No posts yet</h2>
+          <p className="text-gray-400">Follow some restaurants to see their content here</p>
+        </div>
+      </div>
+    );
+  }
 
   const currentPost = demoPosts[currentIndex];
 
