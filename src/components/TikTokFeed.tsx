@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Heart, MessageCircle, Share2, User } from 'lucide-react';
+import { Heart, Bookmark, MapPin, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useUserInteractions } from '@/hooks/useUserInteractions';
 
 interface TikTokPost {
   id: string;
@@ -18,9 +19,9 @@ interface TikTokPost {
 
 const TikTokFeed = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [liked, setLiked] = useState<{ [key: string]: boolean }>({});
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const navigate = useNavigate();
+  const { likePost, savePost, isLiked, isSaved } = useUserInteractions();
 
   // No demo posts - show empty state
   const demoPosts: TikTokPost[] = [];
@@ -55,8 +56,18 @@ const TikTokFeed = () => {
     }
   };
 
-  const handleLike = (postId: string) => {
-    setLiked(prev => ({ ...prev, [postId]: !prev[postId] }));
+  const handleLike = async (postId: string) => {
+    await likePost(postId);
+  };
+
+  const handleSave = async (postId: string) => {
+    await savePost(postId);
+  };
+
+  const handleGoThere = (location: string) => {
+    // Open Google Maps with navigation to the restaurant
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(location)}`;
+    window.open(mapsUrl, '_blank');
   };
 
   const handleProfileClick = (username: string) => {
@@ -118,7 +129,7 @@ const TikTokFeed = () => {
         </div>
 
         {/* Right Side - Controls */}
-        <div className="absolute bottom-20 right-4 flex flex-col items-center space-y-6">
+        <div className="absolute bottom-20 right-4 flex flex-col items-center space-y-4">
           {/* Profile Image */}
           <button
             onClick={() => handleProfileClick(currentPost.username)}
@@ -132,30 +143,41 @@ const TikTokFeed = () => {
             <button
               onClick={() => handleLike(currentPost.id)}
               className={`p-3 rounded-full transition-colors ${
-                liked[currentPost.id] ? 'text-red-500' : 'text-white'
+                isLiked(currentPost.id) ? 'text-red-500' : 'text-white'
               }`}
             >
               <Heart 
-                className={`h-7 w-7 ${liked[currentPost.id] ? 'fill-current' : ''}`} 
+                className={`h-6 w-6 ${isLiked(currentPost.id) ? 'fill-current' : ''}`} 
               />
             </button>
             <span className="text-white text-xs mt-1">
-              {liked[currentPost.id] ? currentPost.likes + 1 : currentPost.likes}
+              {isLiked(currentPost.id) ? currentPost.likes + 1 : currentPost.likes}
             </span>
           </div>
 
-          {/* Comment Button */}
+          {/* Save Button */}
           <div className="flex flex-col items-center">
-            <button className="p-3 rounded-full text-white">
-              <MessageCircle className="h-7 w-7" />
+            <button
+              onClick={() => handleSave(currentPost.id)}
+              className={`p-3 rounded-full transition-colors ${
+                isSaved(currentPost.id) ? 'text-yellow-400' : 'text-white'
+              }`}
+            >
+              <Bookmark 
+                className={`h-6 w-6 ${isSaved(currentPost.id) ? 'fill-current' : ''}`} 
+              />
             </button>
-            <span className="text-white text-xs mt-1">{currentPost.comments}</span>
           </div>
 
-          {/* Share Button */}
-          <button className="p-3 rounded-full text-white">
-            <Share2 className="h-7 w-7" />
-          </button>
+          {/* Go There Button */}
+          <div className="flex flex-col items-center">
+            <button
+              onClick={() => handleGoThere(currentPost.location || currentPost.restaurant_name)}
+              className="p-2 rounded-full bg-gradient-to-br from-orange-400 to-red-500 text-white hover:scale-110 transition-transform"
+            >
+              <MapPin className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
         {/* Progress Indicators */}
