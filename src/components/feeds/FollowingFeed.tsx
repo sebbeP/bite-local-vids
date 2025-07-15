@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Heart, MessageCircle, Share, Bookmark, MoreHorizontal } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Phone, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
 interface FollowingPost {
   id: string;
@@ -19,6 +13,8 @@ interface FollowingPost {
   restaurant?: {
     name: string;
     id: string;
+    phone?: string;
+    address?: string;
   };
   content: {
     video?: string;
@@ -47,7 +43,9 @@ const mockFollowingPosts: FollowingPost[] = [
     },
     restaurant: {
       name: 'Mama Rosa\'s Kitchen',
-      id: 'restaurant_1'
+      id: 'restaurant_1',
+      phone: '+1234567890',
+      address: '123 Main St, City, State'
     },
     content: {
       images: ['/api/placeholder/400/600'],
@@ -69,6 +67,12 @@ const mockFollowingPosts: FollowingPost[] = [
       username: '@thelocalspot',
       avatar: '/api/placeholder/40/40',
       isRestaurant: true
+    },
+    restaurant: {
+      name: 'The Local Spot',
+      id: 'restaurant_2',
+      phone: '+1234567891',
+      address: '456 Oak Ave, City, State'
     },
     content: {
       images: ['/api/placeholder/400/600'],
@@ -93,7 +97,9 @@ const mockFollowingPosts: FollowingPost[] = [
     },
     restaurant: {
       name: 'Fine Dining Experience',
-      id: 'restaurant_5'
+      id: 'restaurant_5',
+      phone: '+1234567893',
+      address: '789 Fine St, City, State'
     },
     content: {
       images: ['/api/placeholder/400/600'],
@@ -142,13 +148,9 @@ const FollowingFeed = () => {
     ));
   };
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: `Check out this post from ${currentPost.creator.name}`,
-        text: currentPost.content.description,
-        url: window.location.href,
-      });
+  const handleCall = (phoneNumber?: string) => {
+    if (phoneNumber) {
+      window.open(`tel:${phoneNumber}`, '_self');
     }
   };
 
@@ -280,7 +282,7 @@ const FollowingFeed = () => {
             className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
             onClick={() => handleLike(currentPost.id)}
           >
-            <Heart className={`h-6 w-6 ${currentPost.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+            <Heart className={`h-5 w-5 ${currentPost.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
           </Button>
           <span className="text-xs text-white/80 mt-1">{currentPost.stats.likes}</span>
         </div>
@@ -292,7 +294,7 @@ const FollowingFeed = () => {
             size="icon"
             className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
           >
-            <MessageCircle className="h-6 w-6" />
+            <MessageCircle className="h-5 w-5" />
           </Button>
           <span className="text-xs text-white/80 mt-1">{currentPost.stats.comments}</span>
         </div>
@@ -307,42 +309,29 @@ const FollowingFeed = () => {
           <Bookmark className={`h-5 w-5 ${currentPost.isSaved ? 'fill-yellow-500 text-yellow-500' : ''}`} />
         </Button>
 
-        {/* Share */}
-        <div className="flex flex-col items-center">
+        {/* Go There (Google Maps) */}
+        {currentPost.restaurant?.address && (
           <Button
             variant="ghost"
             size="icon"
-            className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
-            onClick={handleShare}
+            className="bg-blue-500 hover:bg-blue-600 text-white border-none rounded-full w-12 h-12"
+            onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent(currentPost.restaurant!.address!)}`, '_blank')}
           >
-            <Share className="h-5 w-5" />
+            <MapPin className="h-5 w-5" />
           </Button>
-          <span className="text-xs text-white/80 mt-1">{currentPost.stats.shares}</span>
-        </div>
+        )}
 
-        {/* Three Dots Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
-            >
-              <MoreHorizontal className="h-5 w-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-black/90 border-white/10 text-white">
-            <DropdownMenuItem className="hover:bg-white/10">
-              Unfollow
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-white/10">
-              Hide
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-white/10">
-              Report
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Call Button */}
+        {currentPost.restaurant?.phone && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-green-500 hover:bg-green-600 text-white border-none rounded-full w-12 h-12"
+            onClick={() => handleCall(currentPost.restaurant?.phone)}
+          >
+            <Phone className="h-5 w-5" />
+          </Button>
+        )}
       </div>
 
       {/* Scroll Hint */}

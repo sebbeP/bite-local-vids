@@ -11,27 +11,33 @@ const MainFeed = () => {
     <div className="h-screen bg-black">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
         {/* Top Tab Bar */}
-        <div className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/80 to-transparent p-4">
-          <TabsList className="grid w-full grid-cols-3 bg-black/20 backdrop-blur-md border border-white/10">
-            <TabsTrigger 
-              value="hungry" 
-              className="text-white data-[state=active]:bg-orange-500 data-[state=active]:text-white"
+        <div className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/60 to-transparent p-4">
+          <div className="flex justify-center space-x-8">
+            <button
+              onClick={() => setActiveTab('hungry')}
+              className={`text-sm font-medium transition-colors ${
+                activeTab === 'hungry' ? 'text-white' : 'text-white/60'
+              }`}
             >
-              🍽️ Hungry Mode
-            </TabsTrigger>
-            <TabsTrigger 
-              value="foodporn" 
-              className="text-white data-[state=active]:bg-orange-500 data-[state=active]:text-white"
+              For You
+            </button>
+            <button
+              onClick={() => setActiveTab('foodporn')}
+              className={`text-sm font-medium transition-colors ${
+                activeTab === 'foodporn' ? 'text-white' : 'text-white/60'
+              }`}
             >
-              🔥 For You
-            </TabsTrigger>
-            <TabsTrigger 
-              value="following" 
-              className="text-white data-[state=active]:bg-orange-500 data-[state=active]:text-white"
+              Food Porn
+            </button>
+            <button
+              onClick={() => setActiveTab('following')}
+              className={`text-sm font-medium transition-colors ${
+                activeTab === 'following' ? 'text-white' : 'text-white/60'
+              }`}
             >
-              👤 Following
-            </TabsTrigger>
-          </TabsList>
+              Following
+            </button>
+          </div>
         </div>
 
         {/* Tab Content */}

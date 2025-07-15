@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Phone, Menu, MoreHorizontal, Heart, MessageCircle, Share, Bookmark } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Phone, MapPin, ChevronUp, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
 interface Restaurant {
   id: string;
@@ -80,16 +74,6 @@ const HungryModeFeed = () => {
     window.open(`tel:${phoneNumber}`, '_self');
   };
 
-  const handleMenu = (menuUrl?: string) => {
-    if (menuUrl) {
-      window.open(menuUrl, '_blank');
-    } else {
-      // Fallback to Google search for menu
-      const query = encodeURIComponent(`${currentRestaurant.name} menu`);
-      window.open(`https://www.google.com/search?q=${query}`, '_blank');
-    }
-  };
-
   const handleLike = (id: string) => {
     setRestaurants(prev => prev.map(restaurant => 
       restaurant.id === id 
@@ -108,16 +92,6 @@ const HungryModeFeed = () => {
         ? { ...restaurant, isSaved: !restaurant.isSaved }
         : restaurant
     ));
-  };
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: currentRestaurant.name,
-        text: currentRestaurant.description,
-        url: window.location.href,
-      });
-    }
   };
 
   const goToNext = () => {
@@ -223,7 +197,7 @@ const HungryModeFeed = () => {
 
       {/* Right Side Action Buttons */}
       <div className="absolute right-4 bottom-32 flex flex-col gap-4 z-20">
-        {/* Like Button */}
+        {/* Like */}
         <div className="flex flex-col items-center">
           <Button
             variant="ghost"
@@ -231,21 +205,21 @@ const HungryModeFeed = () => {
             className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
             onClick={() => handleLike(currentRestaurant.id)}
           >
-            <Heart className={`h-6 w-6 ${currentRestaurant.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+            <Heart className={`h-5 w-5 ${currentRestaurant.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
           </Button>
           <span className="text-xs text-white/80 mt-1">{currentRestaurant.likes}</span>
         </div>
 
-        {/* Comments */}
+        {/* Comment */}
         <Button
           variant="ghost"
           size="icon"
           className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
         >
-          <MessageCircle className="h-6 w-6" />
+          <MessageCircle className="h-5 w-5" />
         </Button>
 
-        {/* Save Button */}
+        {/* Save */}
         <Button
           variant="ghost"
           size="icon"
@@ -255,14 +229,14 @@ const HungryModeFeed = () => {
           <Bookmark className={`h-5 w-5 ${currentRestaurant.isSaved ? 'fill-yellow-500 text-yellow-500' : ''}`} />
         </Button>
 
-        {/* Share */}
+        {/* Go There (Google Maps) */}
         <Button
           variant="ghost"
           size="icon"
-          className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
-          onClick={handleShare}
+          className="bg-blue-500 hover:bg-blue-600 text-white border-none rounded-full w-12 h-12"
+          onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent(currentRestaurant.address)}`, '_blank')}
         >
-          <Share className="h-5 w-5" />
+          <MapPin className="h-5 w-5" />
         </Button>
 
         {/* Call Button */}
@@ -274,40 +248,6 @@ const HungryModeFeed = () => {
         >
           <Phone className="h-5 w-5" />
         </Button>
-
-        {/* Menu Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="bg-orange-500 hover:bg-orange-600 text-white border-none rounded-full w-12 h-12"
-          onClick={() => handleMenu(currentRestaurant.menuUrl)}
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
-
-        {/* Three Dots Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
-            >
-              <MoreHorizontal className="h-5 w-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-black/90 border-white/10 text-white">
-            <DropdownMenuItem className="hover:bg-white/10">
-              Report
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-white/10">
-              Hide
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-white/10">
-              Not Interested
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
 
       {/* Scroll Hint */}

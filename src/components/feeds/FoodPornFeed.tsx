@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Heart, MessageCircle, Share, Bookmark, MoreHorizontal } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Phone, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
 interface FoodPost {
   id: string;
@@ -19,6 +13,8 @@ interface FoodPost {
   restaurant?: {
     name: string;
     id: string;
+    phone?: string;
+    address?: string;
   };
   content: {
     video?: string;
@@ -47,7 +43,9 @@ const mockFoodPosts: FoodPost[] = [
     },
     restaurant: {
       name: 'Mama Rosa\'s Kitchen',
-      id: 'restaurant_1'
+      id: 'restaurant_1',
+      phone: '+1234567890',
+      address: '123 Main St, City, State'
     },
     content: {
       images: ['/api/placeholder/400/600'],
@@ -69,6 +67,12 @@ const mockFoodPosts: FoodPost[] = [
       username: '@sakurasushi',
       avatar: '/api/placeholder/40/40',
       isRestaurant: true
+    },
+    restaurant: {
+      name: 'Sakura Sushi Bar',
+      id: 'restaurant_2',
+      phone: '+1234567891',
+      address: '456 Oak Ave, City, State'
     },
     content: {
       images: ['/api/placeholder/400/600'],
@@ -93,7 +97,9 @@ const mockFoodPosts: FoodPost[] = [
     },
     restaurant: {
       name: 'Burger Paradise',
-      id: 'restaurant_3'
+      id: 'restaurant_3',
+      phone: '+1234567892',
+      address: '789 Elm St, City, State'
     },
     content: {
       images: ['/api/placeholder/400/600'],
@@ -142,21 +148,9 @@ const FoodPornFeed = () => {
     ));
   };
 
-  const handleFollow = (id: string) => {
-    setPosts(prev => prev.map(post => 
-      post.id === id 
-        ? { ...post, isFollowed: !post.isFollowed }
-        : post
-    ));
-  };
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: `Check out this food post from ${currentPost.creator.name}`,
-        text: currentPost.content.description,
-        url: window.location.href,
-      });
+  const handleCall = (phoneNumber?: string) => {
+    if (phoneNumber) {
+      window.open(`tel:${phoneNumber}`, '_self');
     }
   };
 
@@ -261,16 +255,6 @@ const FoodPornFeed = () => {
               {currentPost.creator.isRestaurant && (
                 <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">Restaurant</span>
               )}
-              {!currentPost.isFollowed && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-white border-white hover:bg-white hover:text-black h-6 px-3 text-xs"
-                  onClick={() => handleFollow(currentPost.id)}
-                >
-                  Follow
-                </Button>
-              )}
             </div>
             {currentPost.restaurant && (
               <span className="text-orange-400 text-sm">@ {currentPost.restaurant.name}</span>
@@ -294,7 +278,7 @@ const FoodPornFeed = () => {
             className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
             onClick={() => handleLike(currentPost.id)}
           >
-            <Heart className={`h-6 w-6 ${currentPost.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+            <Heart className={`h-5 w-5 ${currentPost.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
           </Button>
           <span className="text-xs text-white/80 mt-1">{currentPost.stats.likes}</span>
         </div>
@@ -306,7 +290,7 @@ const FoodPornFeed = () => {
             size="icon"
             className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
           >
-            <MessageCircle className="h-6 w-6" />
+            <MessageCircle className="h-5 w-5" />
           </Button>
           <span className="text-xs text-white/80 mt-1">{currentPost.stats.comments}</span>
         </div>
@@ -321,42 +305,29 @@ const FoodPornFeed = () => {
           <Bookmark className={`h-5 w-5 ${currentPost.isSaved ? 'fill-yellow-500 text-yellow-500' : ''}`} />
         </Button>
 
-        {/* Share */}
-        <div className="flex flex-col items-center">
+        {/* Go There (Google Maps) */}
+        {currentPost.restaurant?.address && (
           <Button
             variant="ghost"
             size="icon"
-            className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
-            onClick={handleShare}
+            className="bg-blue-500 hover:bg-blue-600 text-white border-none rounded-full w-12 h-12"
+            onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent(currentPost.restaurant!.address!)}`, '_blank')}
           >
-            <Share className="h-5 w-5" />
+            <MapPin className="h-5 w-5" />
           </Button>
-          <span className="text-xs text-white/80 mt-1">{currentPost.stats.shares}</span>
-        </div>
+        )}
 
-        {/* Three Dots Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="bg-black/30 hover:bg-black/50 text-white border-none rounded-full w-12 h-12"
-            >
-              <MoreHorizontal className="h-5 w-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-black/90 border-white/10 text-white">
-            <DropdownMenuItem className="hover:bg-white/10">
-              Report
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-white/10">
-              Hide
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-white/10">
-              Not Interested
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Call Button */}
+        {currentPost.restaurant?.phone && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-green-500 hover:bg-green-600 text-white border-none rounded-full w-12 h-12"
+            onClick={() => handleCall(currentPost.restaurant?.phone)}
+          >
+            <Phone className="h-5 w-5" />
+          </Button>
+        )}
       </div>
 
       {/* Scroll Hint */}
