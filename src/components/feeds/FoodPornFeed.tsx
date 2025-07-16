@@ -269,7 +269,7 @@ const FoodPornFeed = () => {
       </div>
 
       {/* Right Side Action Buttons */}
-      <div className="absolute right-4 bottom-32 flex flex-col gap-4 z-20">
+      <div className="absolute right-4 bottom-20 flex flex-col gap-4 z-20">
         {/* Like Button */}
         <div className="flex flex-col items-center">
           <Button
@@ -310,7 +310,7 @@ const FoodPornFeed = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="bg-blue-500 hover:bg-blue-600 text-white border-none rounded-full w-12 h-12"
+            className="bg-orange-500 hover:bg-orange-600 text-white border-none rounded-full w-12 h-12"
             onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent(currentPost.restaurant!.address!)}`, '_blank')}
           >
             <MapPin className="h-5 w-5" />

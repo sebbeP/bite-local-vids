@@ -74,13 +74,23 @@ const Search = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="relative">
+          <div className="relative mb-4">
             <input
               type="text"
-              placeholder="Search restaurants, cuisines..."
+              placeholder="Search restaurants, users, cuisines..."
               className="w-full px-4 py-3 pl-10 bg-gray-100 rounded-full border-none focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
             <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          </div>
+          
+          {/* Search Categories */}
+          <div className="flex gap-2 mb-2">
+            <button className="px-4 py-2 bg-orange-500 text-white rounded-full text-sm font-medium">
+              Restaurants
+            </button>
+            <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+              Users
+            </button>
           </div>
         </div>
       </div>

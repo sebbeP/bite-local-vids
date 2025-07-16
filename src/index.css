@@ -36,6 +36,10 @@
 
     --radius: 0.5rem;
 
+    /* Orange theme colors for the app */
+    --orange-primary: 24 95% 53%;  /* #f97316 */
+    --orange-secondary: 25 100% 47%; /* #ea580c */
+
     --sidebar-background: 0 0% 98%;
 
     --sidebar-foreground: 240 5.3% 26.1%;
