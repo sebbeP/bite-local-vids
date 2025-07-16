@@ -12,7 +12,8 @@ const MainFeed = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
         {/* Top Tab Bar */}
         <div className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/60 to-transparent p-4">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-center items-center relative">
+            {/* Centered Tab Menu */}
             <div className="flex space-x-8">
               <button
                 onClick={() => setActiveTab('following')}
@@ -41,7 +42,7 @@ const MainFeed = () => {
             </div>
             
             {/* Post Button */}
-            <button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 transition-colors">
+            <button className="absolute right-0 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 transition-colors">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>

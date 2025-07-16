@@ -8,7 +8,7 @@ import ProfileEdit from '@/components/ProfileEdit';
 import { supabase } from '@/integrations/supabase/client';
 
 const Profile = () => {
-  const [activeTab, setActiveTab] = useState('saved');
+  const [activeTab, setActiveTab] = useState('myfoodporn');
   const [userProfile, setUserProfile] = useState<any>(null);
   const [mediaUploads, setMediaUploads] = useState<any[]>([]);
 
@@ -176,6 +176,28 @@ const Profile = () => {
         <div className="max-w-md mx-auto">
           <div className="flex">
             <button
+              onClick={() => setActiveTab('myfoodporn')}
+              className={`flex-1 py-4 text-center font-semibold ${
+                activeTab === 'myfoodporn'
+                  ? 'text-orange-500 border-b-2 border-orange-500'
+                  : 'text-gray-500'
+              }`}
+            >
+              <Camera className="h-5 w-5 mx-auto mb-1" />
+              My Food Porn
+            </button>
+            <button
+              onClick={() => setActiveTab('favourites')}
+              className={`flex-1 py-4 text-center font-semibold ${
+                activeTab === 'favourites'
+                  ? 'text-orange-500 border-b-2 border-orange-500'
+                  : 'text-gray-500'
+              }`}
+            >
+              <Heart className="h-5 w-5 mx-auto mb-1" />
+              My Favourites
+            </button>
+            <button
               onClick={() => setActiveTab('saved')}
               className={`flex-1 py-4 text-center font-semibold ${
                 activeTab === 'saved'
@@ -186,75 +208,54 @@ const Profile = () => {
               <Bookmark className="h-5 w-5 mx-auto mb-1" />
               Saved
             </button>
-            <button
-              onClick={() => setActiveTab('liked')}
-              className={`flex-1 py-4 text-center font-semibold ${
-                activeTab === 'liked'
-                  ? 'text-orange-500 border-b-2 border-orange-500'
-                  : 'text-gray-500'
-              }`}
-            >
-              <Heart className="h-5 w-5 mx-auto mb-1" />
-              Liked
-            </button>
-            <button
-              onClick={() => setActiveTab('photos')}
-              className={`flex-1 py-4 text-center font-semibold ${
-                activeTab === 'photos'
-                  ? 'text-orange-500 border-b-2 border-orange-500'
-                  : 'text-gray-500'
-              }`}
-            >
-              <Camera className="h-5 w-5 mx-auto mb-1" />
-              My Media
-            </button>
           </div>
         </div>
       </div>
 
       {/* Content */}
       <div className="max-w-md mx-auto p-4">
-        {activeTab === 'saved' && (
+        {activeTab === 'myfoodporn' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-900">Saved Places</h3>
-              <span className="text-sm text-gray-500">{savedRestaurants.length} places</span>
+              <h3 className="text-lg font-bold text-gray-900">My Food Porn</h3>
+              <span className="text-sm text-gray-500">{mediaUploads.length} posts</span>
             </div>
             
-            {savedRestaurants.map((restaurant) => (
-              <div key={restaurant.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-                <div className="flex">
-                  <img
-                    src={restaurant.image}
-                    alt={restaurant.name}
-                    className="w-20 h-20 rounded-xl object-cover"
-                  />
-                  <div className="ml-4 flex-1">
-                    <h4 className="font-bold text-gray-900 mb-1">{restaurant.name}</h4>
-                    <p className="text-sm text-gray-600 mb-2">{restaurant.cuisine}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <span>⭐ {restaurant.rating}</span>
-                        <span>•</span>
-                        <span>{restaurant.priceRange}</span>
-                        <span>•</span>
-                        <span>{restaurant.distance}</span>
+            {mediaUploads.length > 0 ? (
+              <div className="grid grid-cols-2 gap-4">
+                {mediaUploads.map((media) => (
+                  <div key={media.id} className="relative bg-white rounded-xl overflow-hidden shadow-sm">
+                    {media.file_type === 'photo' ? (
+                      <img
+                        src={media.file_url}
+                        alt="Uploaded media"
+                        className="w-full h-32 object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-32 bg-gray-200 flex items-center justify-center">
+                        <Camera className="h-8 w-8 text-gray-400" />
                       </div>
-                      <Button size="sm" variant="ghost">
-                        <Bookmark className="h-4 w-4 text-yellow-500 fill-current" />
-                      </Button>
+                    )}
+                    <div className="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                      {media.file_type}
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
+            ) : (
+              <div className="text-center py-12">
+                <Camera className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No posts yet</h3>
+                <p className="text-gray-500">Upload photos and videos to share!</p>
+              </div>
+            )}
           </div>
         )}
 
-        {activeTab === 'liked' && (
+        {activeTab === 'favourites' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-900">Liked Places</h3>
+              <h3 className="text-lg font-bold text-gray-900">My Favourites</h3>
               <span className="text-sm text-gray-500">{likedRestaurants.length} places</span>
             </div>
             
@@ -288,41 +289,40 @@ const Profile = () => {
           </div>
         )}
 
-        {activeTab === 'photos' && (
+        {activeTab === 'saved' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-900">My Media</h3>
-              <span className="text-sm text-gray-500">{mediaUploads.length} files</span>
+              <h3 className="text-lg font-bold text-gray-900">Saved Posts</h3>
+              <span className="text-sm text-gray-500">{savedRestaurants.length} places</span>
             </div>
             
-            {mediaUploads.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4">
-                {mediaUploads.map((media) => (
-                  <div key={media.id} className="relative bg-white rounded-xl overflow-hidden shadow-sm">
-                    {media.file_type === 'photo' ? (
-                      <img
-                        src={media.file_url}
-                        alt="Uploaded media"
-                        className="w-full h-32 object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-32 bg-gray-200 flex items-center justify-center">
-                        <Camera className="h-8 w-8 text-gray-400" />
+            {savedRestaurants.map((restaurant) => (
+              <div key={restaurant.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div className="flex">
+                  <img
+                    src={restaurant.image}
+                    alt={restaurant.name}
+                    className="w-20 h-20 rounded-xl object-cover"
+                  />
+                  <div className="ml-4 flex-1">
+                    <h4 className="font-bold text-gray-900 mb-1">{restaurant.name}</h4>
+                    <p className="text-sm text-gray-600 mb-2">{restaurant.cuisine}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <span>⭐ {restaurant.rating}</span>
+                        <span>•</span>
+                        <span>{restaurant.priceRange}</span>
+                        <span>•</span>
+                        <span>{restaurant.distance}</span>
                       </div>
-                    )}
-                    <div className="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
-                      {media.file_type}
+                      <Button size="sm" variant="ghost">
+                        <Bookmark className="h-4 w-4 text-yellow-500 fill-current" />
+                      </Button>
                     </div>
                   </div>
-                ))}
+                </div>
               </div>
-            ) : (
-              <div className="text-center py-12">
-                <Camera className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No media yet</h3>
-                <p className="text-gray-500">Upload photos and videos using the buttons above!</p>
-              </div>
-            )}
+            ))}
           </div>
         )}
       </div>
