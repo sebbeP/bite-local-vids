@@ -5,6 +5,7 @@ import { Heart, Bookmark, MapPin, Settings, Camera, Share2 } from 'lucide-react'
 import BottomNav from '@/components/BottomNav';
 import MediaUpload from '@/components/MediaUpload';
 import ProfileEdit from '@/components/ProfileEdit';
+import SettingsDialog from '@/components/SettingsDialog';
 import { supabase } from '@/integrations/supabase/client';
 
 const Profile = () => {
@@ -113,9 +114,11 @@ const Profile = () => {
         <div className="max-w-md mx-auto p-6">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Profile</h1>
-            <Button variant="ghost" size="icon">
-              <Settings className="h-6 w-6" />
-            </Button>
+            <SettingsDialog>
+              <Button variant="ghost" size="icon">
+                <Settings className="h-6 w-6" />
+              </Button>
+            </SettingsDialog>
           </div>
 
           {/* User Info */}

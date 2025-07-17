@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import HungryModeFeed from './feeds/HungryModeFeed';
 import FoodPornFeed from './feeds/FoodPornFeed';
 import FollowingFeed from './feeds/FollowingFeed';
+import PostUpload from './PostUpload';
 
 const MainFeed = () => {
   const [activeTab, setActiveTab] = useState('following');
@@ -42,11 +43,13 @@ const MainFeed = () => {
             </div>
             
             {/* Post Button */}
-            <button className="absolute right-0 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 transition-colors">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
+            <PostUpload>
+              <button className="absolute right-0 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 transition-colors">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </PostUpload>
           </div>
         </div>
 
