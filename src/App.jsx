@@ -9,7 +9,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { BiteAuthProvider } from "@/contexts/BiteAuthContext";
 
 // ============================================
 // PAGE COMPONENT IMPORTS
@@ -19,6 +19,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Welcome from "./pages/Welcome";
 import Auth from "./pages/Auth";
+import BiteAuth from "./pages/BiteAuth";
+import Feed from "./pages/Feed";
 import ConsumerOnboarding from "./pages/ConsumerOnboarding";
 import RestaurantOnboarding from "./pages/RestaurantOnboarding";
 import Profile from "./pages/Profile"; // Now using JavaScript version
@@ -75,7 +77,7 @@ const App = () => (
     {/* ============================================ */}
     {/* USER AUTHENTICATION PROVIDER */}
     {/* ============================================ */}
-    <AuthProvider>
+    <BiteAuthProvider>
       
       {/* ============================================ */}
       {/* UI COMPONENTS PROVIDER */}
@@ -106,7 +108,8 @@ const App = () => (
             <Route path="/" element={<Welcome />} />
             
             {/* Authentication Page - Login/Register */}
-            <Route path="/auth" element={<Auth />} />
+            <Route path="/auth" element={<BiteAuth />} />
+            <Route path="/old-auth" element={<Auth />} />
             
             {/* ============================================ */}
             {/* PROTECTED ROUTES - Authentication Required */}
@@ -114,7 +117,8 @@ const App = () => (
             {/* ============================================ */}
             
             {/* Main Feed Page - Primary app interface */}
-            <Route path="/feed" element={<Index />} />
+            <Route path="/feed" element={<Feed />} />
+            <Route path="/old-feed" element={<Index />} />
             
             {/* User Profile Page - JavaScript version */}
             <Route path="/profile" element={<Profile />} />
@@ -148,7 +152,7 @@ const App = () => (
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
-    </AuthProvider>
+    </BiteAuthProvider>
   </QueryClientProvider>
 );
 
