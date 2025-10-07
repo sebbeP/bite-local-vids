@@ -7,130 +7,14 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "13.0.5"
   }
   public: {
     Tables: {
-      media_uploads: {
-        Row: {
-          caption: string | null
-          created_at: string
-          file_type: string
-          file_url: string
-          id: string
-          restaurant_id: string | null
-          storage_path: string | null
-          user_id: string
-        }
-        Insert: {
-          caption?: string | null
-          created_at?: string
-          file_type: string
-          file_url: string
-          id?: string
-          restaurant_id?: string | null
-          storage_path?: string | null
-          user_id: string
-        }
-        Update: {
-          caption?: string | null
-          created_at?: string
-          file_type?: string
-          file_url?: string
-          id?: string
-          restaurant_id?: string | null
-          storage_path?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      user_interactions: {
-        Row: {
-          created_at: string
-          id: string
-          interaction_type: string
-          restaurant_id: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          interaction_type: string
-          restaurant_id: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          interaction_type?: string
-          restaurant_id?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      user_profiles: {
-        Row: {
-          avatar_url: string | null
-          bio: string | null
-          business_description: string | null
-          business_hours: Json | null
-          business_name: string | null
-          created_at: string
-          id: string
-          is_restaurant_owner: boolean | null
-          latitude: number | null
-          location_address: string | null
-          longitude: number | null
-          name: string
-          onboarding_completed: boolean | null
-          preferences: Json | null
-          updated_at: string
-          user_id: string
-          username: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          bio?: string | null
-          business_description?: string | null
-          business_hours?: Json | null
-          business_name?: string | null
-          created_at?: string
-          id?: string
-          is_restaurant_owner?: boolean | null
-          latitude?: number | null
-          location_address?: string | null
-          longitude?: number | null
-          name: string
-          onboarding_completed?: boolean | null
-          preferences?: Json | null
-          updated_at?: string
-          user_id: string
-          username?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          bio?: string | null
-          business_description?: string | null
-          business_hours?: Json | null
-          business_name?: string | null
-          created_at?: string
-          id?: string
-          is_restaurant_owner?: boolean | null
-          latitude?: number | null
-          location_address?: string | null
-          longitude?: number | null
-          name?: string
-          onboarding_completed?: boolean | null
-          preferences?: Json | null
-          updated_at?: string
-          user_id?: string
-          username?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
