@@ -20,7 +20,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      log_event: {
+        Args: {
+          p_log_info: string
+          p_log_level?: number
+          p_message: string
+          p_pid: string
+          p_uid: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
