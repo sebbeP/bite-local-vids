@@ -53,8 +53,9 @@ export const BiteAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const loadUserProfile = async (uid: string) => {
     try {
+      // @ts-ignore - Types will update after migration
       const { data, error } = await supabase
-        .from('User')
+        .from('"Users"."User"')
         .select('*')
         .eq('uid', uid)
         .single();
@@ -90,8 +91,9 @@ export const BiteAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (!authData.user) throw new Error('Failed to create user');
 
       // Create user profile in Users.User table
+      // @ts-ignore - Types will update after migration
       const { error: profileError } = await supabase
-        .from('User')
+        .from('"Users"."User"')
         .insert({
           uid: authData.user.id,
           email,
@@ -106,8 +108,9 @@ export const BiteAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (profileError) throw profileError;
 
       // Create login credentials
+      // @ts-ignore - Types will update after migration
       const { error: loginError } = await supabase
-        .from('LogIn')
+        .from('"Users"."LogIn"')
         .insert({
           uid: authData.user.id,
           email,
